@@ -37,6 +37,8 @@ Cette partie du TP est découpée en 4 grandes parties avec pour chacune des par
 ##### En quoi consiste l’approche Shotgun proteomics?
 
 ```
+Elle consiste en l'identification des peptides en analysant la
+masse des fragments des peptides trypsiques
 
 ```
 
