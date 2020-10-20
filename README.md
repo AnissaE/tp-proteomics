@@ -37,15 +37,13 @@ Cette partie du TP est découpée en 4 grandes parties avec pour chacune des par
 ##### En quoi consiste l’approche Shotgun proteomics?
 
 ```
-Elle consiste en l'identification des peptides en analysant la
-masse des fragments des peptides trypsiques
-
+Elle consiste en l'identification des fragments de peptides par leur masse grâce aux résultats de lab ase de données
 ```
 
 ##### Quel est l’objectif de cette approche ?
 
 ```
-
+Approche bottom up
 ```
 
 #### Procédure
@@ -61,22 +59,24 @@ masse des fragments des peptides trypsiques
 ##### L’identification des protéines/ peptides se réalise grâce à une base de données de protéines. Quelle comparaison va être effectuée?
 
 ```
-
+On va comparer cela au protéome complet d'E. coli
+On va comparer les listes de peptides trypsiques coupés in silico (provenant de notre base de données) à nos données brutes expérimentales
 ```
 
 ##### Existe t’il d’autres types de bases de données pour réaliser l’identification des peptides trypsiques dans un spectre?
 
 ```
-
+Il existe une librairie spectrale (spectre expérimentaux générés précédemment)
+qui permet ceci.
 ```
 
 ##### Est-ce qu’il est possible d’identifier des peptides sans base de données?
 ```
-
+Il est possible d'identifier les peptides grâce à une librairie spectrale
 ```
 ##### Combien de protéines sont identifiées dans le protéome bactérien?
 ```
-
+Dans le cas d'E. coli (K12) 4391 protéines ont été identifiées
 ```
 ##### Comment la liste des séquences des protéines est-elle établie ? Est-elle complète? 
 ```
@@ -84,14 +84,15 @@ masse des fragments des peptides trypsiques
 ```
 ##### Quelle est la différence entre des séquences Swiss-prot et TremBL?
 ```
-
+Les séquences Swiss prot sont annotées manuellement ce qui n'est pas le cas des séquences TrEMBL sont annotées automatiquement (pas forcément vérifiées, donc moins utilisées)
 ```
 ##### A quoi correspond la protéine P00761 et quelle est sa fonction ? 
 ```
-
+La protéine P00761 est la trypsine, c'est une enzyme qui se charge couper les protéines notamment après une lysine ou une arginine ==> permet de faire la idgestion
 ```
 ##### Pourquoi doit-on rajouter cette protéine dans le fichier FASTA final du protéome bactérien?
 ```
+On l'ajoute car on veut s'affranchir de fausses identifications`
 
 ```
 
@@ -139,13 +140,18 @@ NB : si vous avez des messages d’erreur qui s’affichent (missing precursor c
 #### Questions 
 ##### Pourquoi est-il important de bien choisir sa base de données?
 ```
+La base de donnée sera utile lorsque'lon voudra identifier les peptides, donc 
+il est important qu'elle soit de bonne qualité (curatée comme SwissProt) et qu'elle soit enrichie.
 ```
 ##### Est-ce que l’on retrouvera toujours les mêmes protéines au cours du temps ?
 ```
+Non, car les bases de données sont régulièrement mises à jour. Il est possible qu'on trouve une protéine différente juste après que la base de données ait été
+révisée.
 ```
 
 ##### Comment la taille de la base de données peut affecter le score de la protéine recherchée?
 ```
+Comme dit précédemment il est préférable que la base de données soit enrichie. Cela permettrait d'avoir un meilleur choix de la protéine donc cela augmenterait la qualité de l'identification et donc du score.
 ```
 
 ##### Est-ce que les modifications ajoutées sont les seules modifications que l’on peut attendre dans une expérience de shotgun proteomics?
@@ -154,10 +160,12 @@ NB : si vous avez des messages d’erreur qui s’affichent (missing precursor c
 
 ##### Vous avez choisi la trypsine comme enzyme et choisi « specific », qu’est-ce que cela signifie, et comment cela peut affecter le processing ? 
 ```
+
 ```
 
 ##### Qu’est-ce qu’un missed cleavage ? pourquoi 2 et pas 0 ?
 ```
+Missed cleavage correspond au nombre de fois où la trypsine ne coupe pas à certains endroits de la protéine. On choisit le chiffre 2 ici car l'on sait qu'il est possible que parfois, la trypsine ne coupe pas même si cela est censé être un évènement rare. Cela permet donc de prendre en considération des erreurs aléatoires qu'il peut y avoir.
 ```
 ##### Qu’est-ce que la tolérance en masse, comment la calcule-t-on ?
 ```
@@ -323,7 +331,11 @@ ax.plot(x, norm.pdf(x, mu, sqrt(S_2))*scale) # compute theoritical PDF and draw 
 ##### 5. Quelles remarques peut-on faire à l'observation de l'histogramme et de loi théorique?
 
 ```
-
+On voit qu'il y a un grand décalage entre la loi théorique et la répartition des log2 FC des protéines.
+Ceci est en partie dû au fait qu'il y a plus de protéines qui ont un log2FC proche de 0 (144 protéines qui 
+ont un log2FC entre -0.34 et -0.42). De plus, la dispersion des valeurs est différentes selon l'intervalle
+dans lequel on se place ce qui est bien différent de l'aspect lissé et symétrique du graphique de la loi
+de densité normale.
 
 ```
 
@@ -345,9 +357,22 @@ Nous allons implementer une approche ORA (Over Representation Analysis) naive.
 
 ##### 1. Retrouver les entrées du fichier TSV des protéines surabondates
 
-Quelles sont leurs identifiants UNIPROT ?
+Quels sont leurs identifiants UNIPROT ?
 ``` 
-
+	P0A8V6 
+	P0A9Q1
+	P02358 
+	P0ACF8
+	P62399 
+	P0A905
+	P76506
+	P13036
+	P10384 
+	P06971
+	P0A910
+	P06996
+	P76344 
+	P02931
 
 
 ```
@@ -370,14 +395,14 @@ A ce stade, on se contentera des identifiants GO (eg `GO:0005737`). Vous pouvez 
 
 Nous evaluerons la significativité de la présence de tous les termes GO portés par les protéines surabondantes à l'aide d'un modèle hypergéometrique.
 
-Si k protéines surabondantes porte un terme GO, la pvalue de ce terme sera équivalente à <img src="https://render.githubusercontent.com/render/math?math=P(X\ge k), X \sim H(k,K,n,N)">.
+Si k protéines surabondantes portent un terme GO, la pvalue de ce terme sera équivalente à <img src="https://render.githubusercontent.com/render/math?math=P(X\ge k), X \sim H(k,K,n,N)">.
 Completer le tableau ci-dessous avec les quantités vous  semblant adéquates
 
-| Symbole | Paramètre | Quantités Biologique |
+| Symbole | Paramètre | Quantités Biologiques |
 | --- | --- | --- |
-| k | nombre de succès observés| |
+| k | nombre de succès observés| 14 |
 | K | nombre de succès possibles| |
-| n | nombre d'observations| |
+| n | nombre d'observations| 82 |
 | N | nombre d'elements observables| |
 
 #### 4. Calcul de l'enrichissement en fonction biologiques
