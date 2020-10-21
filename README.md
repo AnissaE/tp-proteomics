@@ -156,11 +156,14 @@ Comme dit précédemment il est préférable que la base de données soit enrich
 
 ##### Est-ce que les modifications ajoutées sont les seules modifications que l’on peut attendre dans une expérience de shotgun proteomics?
 ```
+Il est possible qu'il y ait d'autres modifications que l'on ne connaissait pas.
+Une recherche bibliographique pourrait compléter les lacunes, cela dit, il n'est
+pas toujours possible de tout prévoir et c'est un risque à prendre en considération.
 ```
 
 ##### Vous avez choisi la trypsine comme enzyme et choisi « specific », qu’est-ce que cela signifie, et comment cela peut affecter le processing ? 
 ```
-
+L'enzyme trypsine est utilisée comme enzyme de digestion pour les protéines, il est donc nécessaire de le signaler en amont, autrement, s'il reste des traces de la trypsine, cela peut biaiser nos analyses de spectres.
 ```
 
 ##### Qu’est-ce qu’un missed cleavage ? pourquoi 2 et pas 0 ?
